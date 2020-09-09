@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS counties CASCADE;
+DROP TABLE IF EXISTS towns CASCADE;
+
+CREATE TABLE counties (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  state TEXT NOT NULL
+);
+
+CREATE TABLE towns (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  county_id BIGINT REFERENCES counties(id),
+  name TEXT NOT NULL,
+  populated BOOLEAN,
+  founded INT CHECK (founded BETWEEN 1000 AND 2100),
+  class TEXT CHECK (class = ANY ('{A,B,C,D,E}')),
+  img TEXT,
+  notes TEXT
+);
