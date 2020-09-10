@@ -93,4 +93,31 @@ describe('frontierjustice routes', () => {
     });
   });
 
+  it('creates a new town via POST', async() => {
+    const county = await request(app)
+      .post('/api/v1/counties')
+      .send({ name: 'Baker', state: 'Oregon' });
+
+    const response = await request(app)
+      .post('/api/v1/towns')
+      .send({ 
+        countyId: county.id,
+        name: 'Sumpter',
+        populated: true,
+        founded: 1889,
+        class: 'E',
+      });
+
+    expect(response.body).toEqual({
+      id: expect.any(String),
+      countyId: county.id,
+      name: 'Sumpter',
+      populated: true,
+      founded: 1889,
+      class: 'E',
+      img: null,
+      notes: null
+    });
+  });
+
 });
