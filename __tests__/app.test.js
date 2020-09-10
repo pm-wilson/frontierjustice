@@ -191,4 +191,31 @@ describe('frontierjustice routes', () => {
     );
   });
 
+  it('deletes a town with delete', async() => {
+    const newCounty = await County.insert({ name: 'Multnomah', state: 'Oregon' });
+
+    const newTown = await Town.insert({
+      countyId: 1,
+      name: 'Sumpter',
+      populated: true,
+      founded: 1889,
+      class: 'E',
+      img: null,
+      notes: null
+    })
+
+    const response = await request(app)
+      .delete(`/api/v1/towns/${newTown.id}`);
+
+    expect(response.body).toEqual({
+      id: newTown.id,
+      countyId: newCounty.id,
+      name: 'Sumpter',
+      populated: true,
+      founded: 1889,
+      class: 'E',
+      img: null,
+      notes: null
+    });
+  })
 });
