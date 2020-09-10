@@ -59,5 +59,38 @@ describe('frontierjustice routes', () => {
     );
   });
 
+  it('deletes a county by id via delete method', async() => {
+    const createdCounty = await County.insert({
+      name: 'Multnomah',
+      state: 'Oregon'
+    });
+
+    const response = await request(app)
+      .delete(`/api/v1/counties/${createdCounty.id}`);
+
+    expect(response.body).toEqual({
+      id: createdCounty.id,
+      name: 'Multnomah',
+      state: 'Oregon'
+    });
+
+  });
+
+  it('updates a county by id via PUT', async() => {
+    const createdCounty = await County.insert({
+      name: 'Multnomah',
+      state: 'Oregon'
+    });
+
+    const response = await request(app)
+      .put(`/api/v1/counties/${createdCounty.id}`)
+      .send({ name: 'APPOCALYTPO', state: 'DECAY' });
+
+    expect(response.body).toEqual({
+      id: createdCounty.id,
+      name: 'APPOCALYTPO',
+      state: 'DECAY'
+    });
+  });
 
 });
