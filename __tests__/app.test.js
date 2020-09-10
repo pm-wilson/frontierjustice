@@ -45,18 +45,18 @@ describe('frontierjustice routes', () => {
       .send({ name: 'Multnomah', state: 'Oregon' });
 
     const idToFind = newCounty.id;
-//check this.
+
     const foundCounty = await request(app)
-      .get('/api/v1/counties/:id')
+      .get('/api/v1/counties/1')
       .send(idToFind);
 
-    expect(foundCounty.body).toEqual([
+    expect(foundCounty.body).toEqual(
       {
-        'id': 1,
+        'id': '1',
         'name': 'Multnomah',
         'state': 'Oregon'
       }
-    ]);
+    );
   });
 
 
