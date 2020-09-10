@@ -138,10 +138,10 @@ describe('frontierjustice routes', () => {
         img: null,
         notes: null
       }
-    )
+    );
 
     const allTowns = await request(app)
-      .get('/api/v1/towns')
+      .get('/api/v1/towns');
       
     expect(allTowns.body).toEqual([
       {
@@ -155,6 +155,40 @@ describe('frontierjustice routes', () => {
         notes: null
       }
     ]);
+  });
+
+  it('finds a town by id via get', async() => {
+    const newCounty = await County.insert({ name: 'Multnomah', state: 'Oregon' });
+    const newTown = await request(app)
+      .post('/api/v1/towns')
+      .send({
+        countyId: newCounty.id,
+        name: 'Sumpter',
+        populated: true,
+        founded: 1889,
+        class: 'E',
+        img: null,
+        notes: null
+      });
+
+    const idToFind = newTown.id;
+
+    const foundTown = await request(app)
+      .get('/api/v1/towns/1')
+      .send(idToFind);
+
+    expect(foundTown.body).toEqual(
+      {
+        id: expect.any(String),
+        countyId: newCounty.id,
+        name: 'Sumpter',
+        populated: true,
+        founded: 1889,
+        class: 'E',
+        img: null,
+        notes: null
+      }
+    );
   });
 
 });
