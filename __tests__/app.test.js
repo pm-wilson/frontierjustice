@@ -191,4 +191,64 @@ describe('frontierjustice routes', () => {
     );
   });
 
+  it('deletes a town with delete', async() => {
+    const newCounty = await County.insert({ name: 'Multnomah', state: 'Oregon' });
+
+    const newTown = await Town.insert({
+      countyId: 1,
+      name: 'Sumpter',
+      populated: true,
+      founded: 1889,
+      class: 'E',
+      img: null,
+      notes: null
+    })
+
+    const response = await request(app)
+      .delete(`/api/v1/towns/${newTown.id}`);
+
+    expect(response.body).toEqual({
+      id: newTown.id,
+      countyId: newCounty.id,
+      name: 'Sumpter',
+      populated: true,
+      founded: 1889,
+      class: 'E',
+      img: null,
+      notes: null
+    });
+  })
+
+  it('updates a town by id via PUT', async() => {
+    const createdCounty = await County.insert({
+      name: 'Multnomah',
+      state: 'Oregon'
+    });
+
+    const createdTown = await Town.insert({
+      countyId: 1,
+      name: 'Sumpter',
+      populated: true,
+      founded: 1889,
+      class: 'E',
+      img: null,
+      notes: null
+    })
+
+    const response = await request(app)
+      .put(`/api/v1/towns/${createdTown.id}`)
+      .send({ 
+        countyId: 1,
+        name: 'Something Else',
+        populated: true,
+        founded: 1889,
+        class: 'E',
+        img: null,
+        notes: null });
+
+    expect(response.body).toEqual({
+      ...createdTown,
+      name: 'Something Else'
+    });
+  });
 });
