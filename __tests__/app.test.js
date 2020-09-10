@@ -3,6 +3,7 @@ const pool = require('../lib/utils/pool');
 const request = require('supertest');
 const app = require('../lib/app');
 const County = require('../lib/models/county');
+const Town = require('../lib/models/town');
 
 describe('frontierjustice routes', () => {
   beforeEach(() => {
@@ -94,9 +95,9 @@ describe('frontierjustice routes', () => {
   });
 
   it('creates a new town via POST', async() => {
-    const county = await request(app)
-      .post('/api/v1/counties')
-      .send({ name: 'Baker', state: 'Oregon' });
+    const county = await County.insert(
+      { name: 'Baker', state: 'Oregon' }
+    );
 
     const response = await request(app)
       .post('/api/v1/towns')
@@ -106,6 +107,8 @@ describe('frontierjustice routes', () => {
         populated: true,
         founded: 1889,
         class: 'E',
+        img: null,
+        notes: null
       });
 
     expect(response.body).toEqual({
@@ -118,6 +121,40 @@ describe('frontierjustice routes', () => {
       img: null,
       notes: null
     });
+  });
+
+  it('finds all towns via get', async() => {
+    const county = await County.insert(
+      { name: 'Multnomah', state: 'Oregon' }
+    );
+
+    await Town.insert(
+      { 
+        countyId: county.id,
+        name: 'Sumpter',
+        populated: true,
+        founded: 1889,
+        class: 'E',
+        img: null,
+        notes: null
+      }
+    )
+
+    const allTowns = await request(app)
+      .get('/api/v1/towns')
+      
+    expect(allTowns.body).toEqual([
+      {
+        id: expect.any(String),
+        countyId: county.id,
+        name: 'Sumpter',
+        populated: true,
+        founded: 1889,
+        class: 'E',
+        img: null,
+        notes: null
+      }
+    ]);
   });
 
 });
