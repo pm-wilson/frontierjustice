@@ -20,4 +20,44 @@ describe('frontierjustice routes', () => {
       state: 'Washington'
     });
   });
+
+  it('finds all counties via get', async() => {
+    await request(app)
+      .post('/api/v1/counties')
+      .send({ name: 'Multnomah', state: 'Oregon' });
+
+    const allCounties = await request(app)
+      .get('/api/v1/counties')
+      .send();
+
+    expect(allCounties.body).toEqual([
+      {
+        'id': '1',
+        'name': 'Multnomah',
+        'state': 'Oregon'
+      }
+    ]);
+  });
+
+  it('finds a county by id via get', async() => {
+    const newCounty = await request(app)
+      .post('/api/v1/counties')
+      .send({ name: 'Multnomah', state: 'Oregon' });
+
+    const idToFind = newCounty.id;
+//check this.
+    const foundCounty = await request(app)
+      .get('/api/v1/counties/:id')
+      .send(idToFind);
+
+    expect(foundCounty.body).toEqual([
+      {
+        'id': 1,
+        'name': 'Multnomah',
+        'state': 'Oregon'
+      }
+    ]);
+  });
+
+
 });
