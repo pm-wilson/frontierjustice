@@ -17,7 +17,7 @@ describe('frontierjustice routes', () => {
 
     expect(response.body).toEqual({
       id: expect.any(String),
-      name: 'King', 
+      name: 'King',
       state: 'Washington'
     });
   });
@@ -101,7 +101,7 @@ describe('frontierjustice routes', () => {
 
     const response = await request(app)
       .post('/api/v1/towns')
-      .send({ 
+      .send({
         countyId: county.id,
         name: 'Sumpter',
         populated: true,
@@ -129,7 +129,7 @@ describe('frontierjustice routes', () => {
     );
 
     await Town.insert(
-      { 
+      {
         countyId: county.id,
         name: 'Sumpter',
         populated: true,
@@ -142,7 +142,7 @@ describe('frontierjustice routes', () => {
 
     const allTowns = await request(app)
       .get('/api/v1/towns');
-      
+
     expect(allTowns.body).toEqual([
       {
         id: expect.any(String),
@@ -202,7 +202,7 @@ describe('frontierjustice routes', () => {
       class: 'E',
       img: null,
       notes: null
-    })
+    });
 
     const response = await request(app)
       .delete(`/api/v1/towns/${newTown.id}`);
@@ -217,10 +217,10 @@ describe('frontierjustice routes', () => {
       img: null,
       notes: null
     });
-  })
+  });
 
   it('updates a town by id via PUT', async() => {
-    const createdCounty = await County.insert({
+    await County.insert({
       name: 'Multnomah',
       state: 'Oregon'
     });
@@ -233,18 +233,19 @@ describe('frontierjustice routes', () => {
       class: 'E',
       img: null,
       notes: null
-    })
+    });
 
     const response = await request(app)
       .put(`/api/v1/towns/${createdTown.id}`)
-      .send({ 
+      .send({
         countyId: 1,
         name: 'Something Else',
         populated: true,
         founded: 1889,
         class: 'E',
         img: null,
-        notes: null });
+        notes: null
+      });
 
     expect(response.body).toEqual({
       ...createdTown,
